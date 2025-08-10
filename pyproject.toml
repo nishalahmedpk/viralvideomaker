@@ -4,4 +4,15 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "elevenlabs>=2.9.2",
+    "fastapi>=0.116.1",
+    "ffmpeg-python>=0.2.0",
+    "google-genai>=1.29.0",
+    "langchain>=0.3.27",
+    "langchain-google-genai>=2.1.9",
+    "langgraph>=0.6.4",
+    "moviepy==1.0.3",
+    "python-dotenv>=1.1.1",
+    "uvicorn>=0.35.0",
+]
