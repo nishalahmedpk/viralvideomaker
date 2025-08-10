@@ -44,7 +44,6 @@ This project automates the entire workflow of generating viral videos by combini
 - Eleven Labs API key for text-to-speech  
 - Access to Google's Gemini API for natural language generation  
 - Python 3.x environment  
-- Install dependencies listed in `requirements.txt`
 
 ### Installation
 
@@ -53,4 +52,15 @@ git clone https://github.com/nishalahmedpk/viral-video-generator.git
 cd viral-video-generator
 pip install uv
 uv run main.py
+```
+
+## Configuration
+Add your API keys and any necessary settings to a .env file or your configuration file. Example .env:
+
+```
+AZURE_OPENAI_API_KEY=your_azure_openai_key_here
+AZURE_OPENAI_DEPLOYMENT_NAME=sora
+AZURE_OPENAI_ENDPOINT=endpoint
+ELEVENLABS_API_KEY=your_elevenlabs_key_here
+GOOGLE_GEMINI_API_KEY=your_google_gemini_key_here
 ```
