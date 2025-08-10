@@ -215,8 +215,10 @@ from moviepy.editor import AudioFileClip, concatenate_audioclips
 
 def combine_videos_with_audio(state: State):
     import os
-    from moviepy.editor import VideoFileClip, AudioFileClip, concatenate_videoclips, concatenate_audioclips
+    import numpy as np
+    from moviepy.editor import VideoFileClip, AudioFileClip, concatenate_videoclips
     from moviepy.audio.AudioClip import AudioArrayClip
+    from langgraph.types import Command
 
     video_files = state.get("video_files", [])
     video_files = ["output0.mp4", "output1.mp4", "output2.mp4", "output3.mp4", "output4.mp4"]
@@ -251,22 +253,14 @@ def combine_videos_with_audio(state: State):
 
         audio_clip = AudioFileClip(audio_file)
 
+        # If audio is shorter, trim the video to audio duration (remove silence padding)
         if audio_clip.duration < final_clip.duration:
-            silence_duration = final_clip.duration - audio_clip.duration
-            fps = audio_clip.fps or 44100  # fallback fps
-            nchannels = audio_clip.nchannels or 1
+            print(f"Trimming video from {final_clip.duration} to audio duration {audio_clip.duration}")
+            final_clip = final_clip.subclip(0, audio_clip.duration)
 
-            n_samples = int(silence_duration * fps)
-            # Create silent audio array with shape (n_samples, nchannels)
-            silence_array = np.zeros((n_samples, nchannels), dtype=np.float32)
-
-            silence_clip = AudioArrayClip(silence_array, fps=fps)
-
-            audio_clip = concatenate_audioclips([audio_clip, silence_clip])
-            print(f"Audio padded with {silence_duration} seconds of silence")
-
-        # Trim audio if longer than video
-        audio_clip = audio_clip.subclip(0, final_clip.duration)
+        # If audio longer, trim audio to video duration
+        elif audio_clip.duration > final_clip.duration:
+            audio_clip = audio_clip.subclip(0, final_clip.duration)
 
         final_clip = final_clip.set_audio(audio_clip)
 
@@ -284,6 +278,7 @@ def combine_videos_with_audio(state: State):
         for c in clips:
             c.close()
 
+
 graph_builder = StateGraph(State)
 graph_builder.add_node("HashtagGenerator", HashtagGenerator)
 graph_builder.add_node("ScriptGenerator", ScriptGenerator)
@@ -300,4 +295,4 @@ graph_builder.add_edge("audio_generator", "combine_videos_with_audio")
 graph_builder.add_edge("combine_videos_with_audio", END)
 graph = graph_builder.compile()
 
-graph.invoke(State(description=""" Create a viral video for promoting BTIS Pilani""")) #Wrap this in a function to invoke the graph
+# graph.invoke(State(description=""" Create a viral video for promoting BTIS Pilani""")) #Wrap this in a function to invoke the graph

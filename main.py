@@ -1,29 +1,15 @@
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-import uvicorn
-from graph import graph, State  # Assuming you have a graph module that provides these
+def main():
+    from graph import graph,State
 
-app = FastAPI()
+    # Example state to invoke the graph
+    initial_state = State(description=input("Enter the description for the viral video: "))
+    
+    # Invoke the graph with the initial state
+    result = graph.invoke(initial_state)
+    
+    # Print the result
+    print(result)
 
-
-class VideoRequest(BaseModel):
-    description: str
-
-class VideoResponse(BaseModel):
-    result: dict
-
-@app.post("/generate-video", response_model=VideoResponse)
-async def generate_video(req: VideoRequest):
-    try:
-        # Wrap the description in a State and invoke your graph
-        state = State(description=req.description)
-        output = graph.invoke(state)
-        
-        # Depending on your graph output, adapt this:
-        # Here assuming output is a dict or similar
-        return VideoResponse(result=output)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    main()
