@@ -64,3 +64,14 @@ AZURE_OPENAI_ENDPOINT=endpoint
 ELEVENLABS_API_KEY=your_elevenlabs_key_here
 GOOGLE_GEMINI_API_KEY=your_google_gemini_key_here
 ```
+
+## Future Improvements
+
+Dynamic Prompt Synthesis: Enhance content relevance by dynamically generating and refining prompts
+
+Advanced Tooling Integration: Incorporate additional AI tools and models for improved video creativity and quality
+
+Interactive UI: Develop a user-friendly interface to customize video parameters and monitor generation progress
+
+Scalability: Optimize for batch video generation and cloud deployment
+
