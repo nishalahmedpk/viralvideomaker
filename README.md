@@ -1,15 +1,15 @@
 # Viral Video Generator
 
-**Streamline and automate the creation of viral videos using state-of-the-art AI models and tools**
+**Application Workflow**
 
-**Langgraph Workflow**
 ![Workflow Diagram](langgraph.png)
 
 **Sample Output**
-```
-Enter the description for the viral video: Make a long video for a client to promote his website design services.
-```
-<video controls src="final_video_with_audio.mp4" title="Final Generated Video"></video>
+
+`Enter the description for the viral video: Make a long video for a client to promote his website design services.`
+
+[🎥 Watch the video](final_video_with_audio.mp4)
+
 
 ## Overview
 
