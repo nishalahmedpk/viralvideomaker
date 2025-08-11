@@ -2,7 +2,6 @@
 
 **Streamline and automate the creation of viral videos using state-of-the-art AI models and tools**
 
----
 
 ## Overview
 
@@ -14,7 +13,7 @@ This project automates the entire workflow of generating viral videos by combini
 - **Workflow Orchestration:** Managed using the open-source framework **LangGraph** for seamless integration  
 - **Video Editing:** Final video assembly and editing performed with **MoviePy**
 
----
+
 
 ## Features
 
@@ -24,7 +23,6 @@ This project automates the entire workflow of generating viral videos by combini
 - Open source orchestration framework for workflow control  
 - High-quality video editing with Python-based MoviePy library
 
----
 
 ## How It Works
 
@@ -34,7 +32,7 @@ This project automates the entire workflow of generating viral videos by combini
 4. **Editing:** MoviePy stitches video and audio, applies edits, and produces the final viral-ready video.  
 5. **Workflow Management:** LangGraph orchestrates the entire process, ensuring smooth data flow between components.
 
----
+
 
 ## Getting Started
 
