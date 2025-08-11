@@ -104,7 +104,7 @@ def generate_and_download_video(prompt: str,i:int):
 def VideoGenerator(state: State):
     if "prompts" in state:
         print(state["prompts"])
-        # return state
+        return state
     video_files = []
     for i, prompt in enumerate(state["prompts"]):
         print(f"Generating video for prompt {i+1}: {prompt}")
