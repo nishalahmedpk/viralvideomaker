@@ -1,12 +1,17 @@
 # Viral Video Generator
 
 **Langgraph Application Workflow**
+
 ![Workflow Diagram](langgraph.png)
+
 **Sample Input**
 ```Enter the description for the viral video: Make a long video for a client to promote his website design services.```
+
 **Sample Output**
+
 [🎥 Generated Video](final_video_with_audio.mp4)
-[![Watch on YouTube](thumbnail.png)](https://youtube.com/shorts/DaIMJY1yVGE?feature=share)
+
+[![Watch on YouTube]](https://youtube.com/shorts/DaIMJY1yVGE?feature=share)
 
 ## Overview
 
