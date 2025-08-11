@@ -11,7 +11,7 @@
 
 [🎥 Generated Video](final_video_with_audio.mp4)
 
-[![Watch on YouTube]](https://youtube.com/shorts/DaIMJY1yVGE?feature=share)
+[Watch on YouTube](https://youtube.com/shorts/DaIMJY1yVGE?feature=share)
 
 ## Overview
 
