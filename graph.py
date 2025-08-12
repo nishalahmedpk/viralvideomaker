@@ -11,7 +11,9 @@ class State(TypedDict):
     # messages: Annotated[list, add_messages]
     # prompts: List[str] = []
     # generated_video_files: List[str] = []
+    project_name: str = "Viral Video Maker"
     description: str = ""
+    generate_video: bool = False
     prompts: NotRequired[List[str]] = []
     generated_video_files: NotRequired[List[str]] = []
     hashtags: NotRequired[List[str]] = []
@@ -53,7 +55,7 @@ headers = {
 }
 
 
-def generate_and_download_video(prompt: str,i:int):
+def generate_and_download_video(prompt: str,i:int, project_name: str):
     print(f"Generating video for prompt {i+1}: {prompt}")
     body = {
         "prompt": prompt,
@@ -67,6 +69,7 @@ def generate_and_download_video(prompt: str,i:int):
     if not job_response.ok:
         print(f"❌ Video {i} generation failed.")
         print(json.dumps(job_response.json(), sort_keys=True, indent=4, separators=(',', ': ')))
+        return None
     else:
         print(json.dumps(job_response.json(), sort_keys=True, indent=4, separators=(',', ': ')))
         job_response = job_response.json()
@@ -92,6 +95,7 @@ def generate_and_download_video(prompt: str,i:int):
                 video_response = requests.get(video_url, headers=headers)
                 if video_response.ok:
                     output_filename = f"output{i}.mp4"
+                    output_filename = os.path.join(project_name,output_filename)
                     with open(output_filename, "wb") as file:
                         file.write(video_response.content)
                     print(f'Generated video saved as "{output_filename}"')
@@ -100,16 +104,21 @@ def generate_and_download_video(prompt: str,i:int):
         elif status == "failed":
             print("❌ Video {i} generation failed.")
             print(json.dumps(job_response, sort_keys=True, indent=4, separators=(',', ': ')))
+            return None
 
 def VideoGenerator(state: State):
-    if "prompts" in state:
-        print(state["prompts"])
-        # return state
+    if state["generate_video"]==False:
+        print("Skipping video generation as per user request.")
+        video_files = ["output0.mp4", "output1.mp4", "output2.mp4", "output3.mp4", "output4.mp4"]
+        video_files = [os.path.join("placeholder",v) for v in video_files]
+        return Command(update={"video_files": video_files})
+    project_name = state["project_name"]
     video_files = []
     for i, prompt in enumerate(state["prompts"]):
         print(f"Generating video for prompt {i+1}: {prompt}")
-        video_files.append(f"output{i}.mp4")
-        generate_and_download_video(prompt, i)
+        video_files.append(os.path.join(project_name,f"output{i}.mp4"))
+        generate_and_download_video(prompt, i, project_name)
+    return Command(update={"video_files": video_files})
 
 
 from langgraph.types import Command
@@ -158,7 +167,7 @@ class PromptOutput(BaseModel):
 prompt3 = ChatPromptTemplate.from_messages([
     ("system",
      """You are an expert cinematic storyteller and prompt engineer specializing in creating detailed, scene-by-scene prompts for video generation.  
-     Given the voiceover script provided, generate 3 to 5 vivid and richly detailed scene prompts that visually interpret and complement the voiceover.  
+     Given the voiceover script provided, generate 3 to 5 vivid and richly detailed JSON scene prompts that visually interpret and complement the voiceover.  
      Ensure that all scenes share a consistent thematic style in lighting, color palette, mood, and visual motifs, so the final video feels coherent and unified.  
      Do NOT include text overlays or voiceover lines in the prompts—focus entirely on visual descriptions, actions, settings, and atmosphere that can guide video creation.  
      Return the prompts as a JSON list under the key 'prompts'."""),
@@ -186,7 +195,9 @@ def audio_generator(state: State):
         return state
     
     print(f"Generating audio for voiceover: {state['voiceover']}")
-    audio_filename = "output_audio.mp3"
+
+    project_name = state["project_name"]
+    audio_filename = os.path.join(project_name, "output_audio.mp3")
 
     # Initialize ElevenLabs client
     client = ElevenLabs()
@@ -220,14 +231,18 @@ def combine_videos_with_audio(state: State):
     from moviepy.audio.AudioClip import AudioArrayClip
     from langgraph.types import Command
 
-    video_files = state.get("video_files", [])
-    video_files = ["output0.mp4", "output1.mp4", "output2.mp4", "output3.mp4", "output4.mp4"]
+    video_files = state["video_files"]
+    print(video_files)
+    if state["generate_video"]==False:
+        video_files = ["output0.mp4", "output1.mp4", "output2.mp4", "output3.mp4", "output4.mp4"]
+        video_files = [os.path.join("placeholder",v) for v in video_files]
 
     if not video_files:
         print("No video files found in state — cannot combine.")
         return state
 
     audio_file = "output_audio.mp3"
+    audio_file = os.path.join(state["project_name"], audio_file)
     if not os.path.exists(audio_file):
         print("No audio file found — cannot combine.")
         return state
@@ -264,7 +279,7 @@ def combine_videos_with_audio(state: State):
 
         final_clip = final_clip.set_audio(audio_clip)
 
-        output_file = "final_video_with_audio.mp4"
+        output_file = os.path.join(state["project_name"], "final_video.mp4")
         final_clip.write_videofile(output_file, codec="libx264", audio_codec="aac")
 
         print(f"Final video saved as {output_file}")
